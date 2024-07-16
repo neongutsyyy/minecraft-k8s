@@ -35,7 +35,7 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 ansiblePlaybook(
-                    playbook: 'ansible/minecraft-playbook.yml',
+                    playbook: 'ansible/minecraft-playbook.yaml',
                     inventory: 'localhost,'
                 )
             }
