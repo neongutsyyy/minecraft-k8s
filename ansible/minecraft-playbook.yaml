@@ -1,0 +1,23 @@
+- name: Configure Minecraft Server
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create Minecraft configuration directory
+      file:
+        path: /tmp/minecraft-config
+        state: directory
+
+    - name: Create server.properties file
+      copy:
+        dest: /tmp/minecraft-config/server.properties
+        content: |
+          gamemode=survival
+          difficulty=normal
+          max-players=20
+          view-distance=10
+          enable-command-block=true
+
+    - name: Apply Kubernetes manifests
+      kubernetes:
+        definition: "{{ lookup('file', '../kubernetes/') }}"
+        namespace: minecraft
