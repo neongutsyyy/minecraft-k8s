@@ -1,28 +1,42 @@
 pipeline {
     agent any
-    
+
+    environment {
+        PATH = "/usr/local/bin:$PATH" // Ensure kubectl path is included in PATH
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git 'https://github.com/your/minecraft-server-repo.git'
+                checkout scm
             }
         }
-        
-        stage('Deploy with Ansible') {
+
+        stage('Run Ansible Playbook') {
             steps {
+                // Use Ansible plugin to run playbook
                 ansiblePlaybook(
-                    playbook: 'ansible/minecraft.yml',
-                    inventory: 'ansible/inventory'
+                    playbook: 'ansible/minecraft-playbook.yaml',
+                    inventory: 'localhost,'
                 )
             }
         }
-        
-        stage('Deploy to Kubernetes') {
+
+        stage('Apply Kubernetes Manifests') {
             steps {
-                kubernetesDeploy(
-                    configs: 'kubernetes/*.yaml',
-                    kubeconfigId: 'kubeconfig'
-                )
+                script {
+                    // Apply Kubernetes manifests using kubectl
+                    sh 'kubectl apply -f kubernetes/'
+                }
+            }
+        }
+
+        stage('Trigger ArgoCD Sync') {
+            steps {
+                script {
+                    // Trigger ArgoCD sync
+                    sh 'argocd app sync minecraft'
+                }
             }
         }
     }
