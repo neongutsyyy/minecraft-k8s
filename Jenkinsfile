@@ -12,10 +12,21 @@ pipeline {
             steps {
                 script {
                     sh '''
+                        # Download kubectl
                         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                        
+                        # Make kubectl executable
                         chmod +x kubectl
-                        sudo mv kubectl /usr/local/bin/
-                        kubectl version --client
+                        
+                        # Move kubectl to a directory in PATH
+                        mkdir -p $HOME/bin
+                        mv kubectl $HOME/bin/
+                        
+                        # Add the bin directory to PATH
+                        export PATH=$PATH:$HOME/bin
+                        
+                        # Verify kubectl installation
+                        $HOME/bin/kubectl version --client
                     '''
                 }
             }
