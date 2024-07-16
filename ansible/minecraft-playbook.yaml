@@ -19,5 +19,5 @@
 
     - name: Apply Kubernetes manifests
       kubernetes:
-        definition: "{{ lookup('file', '../kubernetes/') }}"
+        definition: "{{ lookup('file', './kubernetes/') }}"
         namespace: minecraft
