@@ -1,0 +1,8 @@
+grafana:
+  adminPassword: dummy2024
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}

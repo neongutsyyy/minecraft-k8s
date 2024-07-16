@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+  namespace: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      containers:
+      - name: minecraft
+        image: itzg/minecraft-server:latest
+        ports:
+        - containerPort: 25565
+        env:
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: "PAPER"
+        - name: MEMORY
+          value: "1G"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        volumeMounts:
+        - name: minecraft-data
+          mountPath: /data
+      volumes:
+      - name: minecraft-data
+        emptyDir: {}

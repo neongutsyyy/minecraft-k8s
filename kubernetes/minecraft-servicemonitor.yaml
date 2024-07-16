@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minecraft
+  namespace: minecraft
+spec:
+  selector:
+    matchLabels:
+      app: minecraft
+  endpoints:
+  - port: minecraft
+    interval: 15s
