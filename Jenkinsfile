@@ -32,12 +32,31 @@ pipeline {
             }
         }
 
+        stage('Install Ansible') {
+            steps {
+                script {
+                    // Check if Ansible is installed
+                    def ansibleInstalled = sh(script: 'ansible --version', returnStatus: true)
+                    
+                    if (ansibleInstalled != 0) {
+                        // Install Ansible using pip
+                        sh '''
+                            pip install --user ansible
+                            export PATH="$HOME/.local/bin:$PATH"
+                        '''
+                    } else {
+                        echo 'Ansible is already installed.'
+                    }
+                }
+            }
+        }
+
         stage('Run Ansible Playbook') {
             steps {
-                ansiblePlaybook(
-                    playbook: 'ansible/minecraft-playbook.yaml',
-                    inventory: 'localhost,'
-                )
+                script {
+                    // Execute your Ansible playbook
+                    sh 'ansible-playbook ansible/minecraft-playbook.yaml -i localhost,'
+                }
             }
         }
 
