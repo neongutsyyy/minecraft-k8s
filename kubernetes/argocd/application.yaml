@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/yourusername/minecraft-k8s-project.git'
+    repoURL: 'https://github.com/neongutsyyy/minecraft-k8s.git'
     path: kubernetes
     targetRevision: HEAD
   destination:
