@@ -4,4 +4,4 @@ kubernetes-cli:1.12.0
 workflow-aggregator:596.v8c21c963d92d
 git:5.2.0
 pipeline-model-definition:2.2144.v077a_d1928a_40
-credentials-binding:631.v861c06d062b_4
+credentials-binding:642.v737c34dea_6c2
