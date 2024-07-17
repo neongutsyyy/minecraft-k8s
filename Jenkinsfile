@@ -1,33 +1,26 @@
-pipeline {
-    agent any
-    
-    environment {
-        DOCKER_IMAGE = "minecraft:${BUILD_NUMBER}"
-    }
-    
-    stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build(DOCKER_IMAGE, "-f docker/Dockerfile .")
-                }
-            }
-        }
-        
-        stage('Push to Registry') {
-            steps {
-                script {
-                    docker.withRegistry('http://localhost:5000') {
-                        docker.image(DOCKER_IMAGE).push()
-                    }
-                }
-            }
-        }
-    }
-    
-    post {
-        always {
-            sh "docker rmi ${DOCKER_IMAGE}"
-        }
-    }
-}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      containers:
+      - name: minecraft
+        image: neongutsyyy/minecraft-k8s:latest
+        ports:
+        - containerPort: 25565
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2
+            memory: 2Gi

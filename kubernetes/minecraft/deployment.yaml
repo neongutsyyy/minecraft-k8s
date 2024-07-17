@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: minecraft
-        image: minecraft:latest
+        image: neongutsyyy/minecraft-k8s:latest
         ports:
         - containerPort: 25565
         resources:
