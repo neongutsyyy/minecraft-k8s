@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: minecraft
+  name: minecraft-server
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/neongutsyyy/minecraft-k8s.git'
+    repoURL: 'https://github.com/yourusername/minecraft-k8s-project.git'
     path: kubernetes
     targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: minecraft
+    namespace: default
   syncPolicy:
     automated:
       prune: true

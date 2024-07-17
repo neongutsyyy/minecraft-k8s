@@ -1,0 +1,22 @@
+---
+- name: Setup Minecraft Server Host
+  hosts: localhost
+  tasks:
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+
+    - name: Install Kubernetes
+      ansible.builtin.apt:
+        name: 
+          - kubectl
+          - kubeadm
+          - kubelet
+        state: present
+
+    - name: Start and enable Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes

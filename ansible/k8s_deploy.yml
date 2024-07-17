@@ -1,0 +1,18 @@
+---
+- name: Deploy Minecraft to Kubernetes
+  hosts: localhost
+  tasks:
+    - name: Create Minecraft deployment
+      k8s:
+        definition: "{{ lookup('file', '../kubernetes/minecraft/deployment.yaml') | from_yaml }}"
+        state: present
+
+    - name: Create Minecraft service
+      k8s:
+        definition: "{{ lookup('file', '../kubernetes/minecraft/service.yaml') | from_yaml }}"
+        state: present
+
+    - name: Create Minecraft HPA
+      k8s:
+        definition: "{{ lookup('file', '../kubernetes/minecraft/hpa.yaml') | from_yaml }}"
+        state: present

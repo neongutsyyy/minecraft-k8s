@@ -1,16 +1,16 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: minecraft-hpa
+  name: minecraft
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: minecraft
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 80
+      targetAverageUtilization: 50

@@ -1,0 +1,7 @@
+docker-workflow:563.vd5d2e5c4007f
+kubernetes:3937.vd7b_82db_e347b_
+kubernetes-cli:1.12.0
+workflow-aggregator:596.v8c21c963d92d
+git:5.2.0
+pipeline-model-definition:2.2144.v077a_d1928a_40
+credentials-binding:631.v861c06d062b_4

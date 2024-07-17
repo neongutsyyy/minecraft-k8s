@@ -1,0 +1,22 @@
+---
+- name: Configure Jenkins
+  hosts: jenkins
+  tasks:
+    - name: Install Jenkins plugins
+      jenkins_plugin:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker-workflow
+        - kubernetes
+        - kubernetes-cli
+        - workflow-aggregator
+        - git
+        - pipeline-model-definition
+        - credentials-binding
+
+    - name: Create Jenkins job
+      jenkins_job:
+        config: "{{ lookup('file', 'jenkins_job_config.xml') }}"
+        name: "minecraft-deploy"
+        state: present
