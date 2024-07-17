@@ -1,19 +1,59 @@
 ---
 - name: Setup Minecraft Server Host
   hosts: localhost
+  become: true
   tasks:
-    - name: Install Docker
+    - name: Install prerequisites
       ansible.builtin.apt:
-        name: docker.io
+        name: 
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
         state: present
 
-    - name: Install Kubernetes
+    - name: Add Docker’s official GPG key
+      ansible.builtin.shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+    - name: Set up Docker stable repository
+      ansible.builtin.shell: |
+        sudo add-apt-repository \
+          "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) \
+          stable"
+      args:
+        warn: false
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Check if kubectl is already installed
+      command: kubectl version --client
+      register: kubectl_installed
+      ignore_errors: true
+
+    - name: Add Kubernetes apt-key
+      ansible.builtin.shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add=
+      when: kubectl_installed.failed
+
+    - name: Add Kubernetes repository
+      ansible.builtin.shell: |
+        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+      when: kubectl_installed.failed
+
+    - name: Install Kubernetes tools
       ansible.builtin.apt:
         name: 
           - kubectl
           - kubeadm
           - kubelet
         state: present
+        update_cache: yes
+      when: kubectl_installed.failed
 
     - name: Start and enable Docker service
       ansible.builtin.service:
