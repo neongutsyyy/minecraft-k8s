@@ -18,7 +18,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
+                    docker.withRegistry('https://hub.docker.com/repository/docker/neongutsyyy/minecraft-k8s/', DOCKER_HUB_CREDENTIALS) {
                         docker.image(DOCKER_IMAGE).push()
                     }
                 }
