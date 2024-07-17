@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        PATH = "/usr/local/bin:$PATH" // Ensure kubectl path is included in PATH
+        PATH = "/usr/local/bin:$PATH"
+        KUBECONFIG = credentials('kubeconfig-credential-id') // Add this line
     }
 
     stages {
@@ -12,20 +13,29 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                ansible-galaxy collection install community.kubernetes
+                ansible-galaxy collection install community.general
+                '''
+            }
+        }
+
         stage('Run Ansible Playbook') {
             steps {
-                // Use Ansible plugin to run playbook
                 ansiblePlaybook(
                     playbook: 'ansible/minecraft-playbook.yaml',
-                    inventory: 'localhost,'
+                    inventory: 'localhost,',
+                    extras: '-e "kubernetes_enabled=true"',
+                    colorized: true
                 )
             }
         }
 
         stage('Apply Kubernetes Manifests') {
             steps {
-                script {
-                    // Apply Kubernetes manifests using kubectl
+                withKubeConfig([credentialsId: 'kubeconfig-credential-id']) {
                     sh 'kubectl apply -f kubernetes/'
                 }
             }
@@ -33,11 +43,16 @@ pipeline {
 
         stage('Trigger ArgoCD Sync') {
             steps {
-                script {
-                    // Trigger ArgoCD sync
-                    sh 'argocd app sync minecraft'
+                withCredentials([string(credentialsId: 'argocd-auth-token', variable: 'ARGOCD_AUTH_TOKEN')]) {
+                    sh 'argocd app sync minecraft --auth-token $ARGOCD_AUTH_TOKEN'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }

@@ -1,6 +1,10 @@
+---
 - name: Configure Minecraft Server
   hosts: localhost
   connection: local
+  collections:
+    - community.kubernetes
+    - community.general
   tasks:
     - name: Create Minecraft configuration directory
       file:
@@ -19,5 +23,7 @@
 
     - name: Apply Kubernetes manifests
       kubernetes:
-        definition: "{{ lookup('file', './kubernetes/') }}"
+        definition: "{{ lookup('file', item) | from_yaml }}"
         namespace: minecraft
+      loop: "{{ lookup('fileglob', './kubernetes/*.y*ml', wantlist=True) }}"
+      when: kubernetes_enabled | default(false)
