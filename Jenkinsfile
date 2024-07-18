@@ -7,28 +7,19 @@ pipeline {
     }
     
     stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build(DOCKER_IMAGE, "-f docker/Dockerfile .")
-                }
-            }
-        }
-        
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_HUB_CREDENTIALS) {
-                        docker.image(DOCKER_IMAGE).push()
-                    }
-                }
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //             docker.build(DOCKER_IMAGE, "-f docker/Dockerfile .")
+        //         }
+        //     }
+        // }
         
         stage('Deploy to Kubernetes') {
             steps {
                 script {
                     // Update Kubernetes deployment with the new image
+                    sh "cat $KUBECONFIG"
                     sh "kubectl set image deployment/minecraft minecraft=${DOCKER_IMAGE} --v=6"
                 }
             }
