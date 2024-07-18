@@ -14,6 +14,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Setup Kubernetes Config') {
+            steps {
+                withCredentials([file(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
+                    script {
+                        sh """
+                        mkdir -p ~/.kube
+                        cp ${KUBECONFIG} ~/.kube/config
+                        chmod 600 ~/.kube/config
+                        """
+                    }
+                }
+            }
+        }
         
         stage('Deploy to Kubernetes') {
             steps {
