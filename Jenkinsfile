@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Setup Kubernetes Config') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig-secret', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
                     script {
                         sh """
                         mkdir -p ~/.kube
