@@ -7,13 +7,13 @@ pipeline {
     }
     
     stages {
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //             docker.build(DOCKER_IMAGE, "-f docker/Dockerfile .")
-        //         }
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build(DOCKER_IMAGE, "-f docker/Dockerfile .")
+                }
+            }
+        }
         
         stage('Deploy to Kubernetes') {
             steps {
