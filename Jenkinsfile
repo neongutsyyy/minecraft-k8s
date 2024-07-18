@@ -19,7 +19,6 @@ pipeline {
             steps {
                 script {
                     // Update Kubernetes deployment with the new image
-                    sh "cat $KUBECONFIG"
                     sh "kubectl set image deployment/minecraft minecraft=${DOCKER_IMAGE} --v=6"
                 }
             }
