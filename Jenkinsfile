@@ -7,17 +7,9 @@ pipeline {
     }
     
     stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build(DOCKER_IMAGE, "-f docker/Dockerfile .")
-                }
-            }
-        }
-
         stage('Setup Kubernetes Config') {
             steps {
-                withCredentials([file(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: 'kubeconfig-secret', variable: 'KUBECONFIG')]) {
                     script {
                         sh """
                         mkdir -p ~/.kube
@@ -28,7 +20,26 @@ pipeline {
                 }
             }
         }
-        
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build(DOCKER_IMAGE, "-f docker/Dockerfile .")
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_HUB_CREDENTIALS) {
+                        docker.image(DOCKER_IMAGE).push()
+                        docker.image(DOCKER_IMAGE).push("latest")
+                    }
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
