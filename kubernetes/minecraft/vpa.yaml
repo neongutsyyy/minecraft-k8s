@@ -1,0 +1,20 @@
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: minecraft-vpa
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: minecraft
+  updatePolicy:
+    updateMode: "Auto"  
+  resourcePolicy:
+    containerPolicies:
+    - containerName: minecraft
+      minAllowed:
+        cpu: "500m"         
+        memory: "1Gi"       
+      maxAllowed:
+        cpu: "2"            
+        memory: "3Gi"       
